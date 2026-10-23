@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Run #{{ run.pk }}{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>Run #{{ run.pk }}</h1>
+  <p class="muted">
+    <span data-testid="run-filename">{{ run.filename|default:"(unnamed)" }}</span>
+    · {{ run.get_source_display }} · {{ run.created_at|date:"Y-m-d H:i" }}
+  </p>
+  <p>Status: <span class="status {{ run.status }}" data-testid="run-status">{{ run.status }}</span></p>
+  <div class="stats">
+    <div><strong data-testid="total-rows">{{ run.total_rows }}</strong>rows</div>
+    <div><strong data-testid="valid-rows">{{ run.valid_rows }}</strong>valid</div>
+    <div><strong data-testid="invalid-rows">{{ run.invalid_rows }}</strong>invalid</div>
+  </div>
+</div>
+<div class="card">
+  <h2>Errors</h2>
+  {% if errors %}
+    <table data-testid="errors-table">
+      <thead><tr><th>Row</th><th>Field</th><th>Problem</th></tr></thead>
+      <tbody>
+        {% for error in errors %}
+          <tr data-testid="error-row">
+            <td data-testid="error-row-number">{{ error.row_number }}</td>
+            <td data-testid="error-field">{{ error.field }}</td>
+            <td data-testid="error-message">{{ error.message }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p data-testid="no-errors">Every row passed validation.</p>
+  {% endif %}
+</div>
+{% endblock %}

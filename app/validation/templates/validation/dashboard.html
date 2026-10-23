@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="card">
+  <div style="display: flex; align-items: center; justify-content: space-between;">
+    <h1>Validation runs</h1>
+    <a class="button" href="{% url 'upload' %}" data-testid="new-upload">Validate a file</a>
+  </div>
+  {% if runs %}
+    <table data-testid="runs-table">
+      <thead>
+        <tr><th>Run</th><th>File</th><th>Source</th><th>Rows</th><th>Invalid</th><th>Status</th><th>Created</th></tr>
+      </thead>
+      <tbody>
+        {% for run in runs %}
+          <tr data-testid="run-row" data-run-id="{{ run.pk }}">
+            <td><a href="{% url 'run-detail' run.pk %}" data-testid="run-link">#{{ run.pk }}</a></td>
+            <td data-testid="run-filename">{{ run.filename|default:"—" }}</td>
+            <td>{{ run.get_source_display }}</td>
+            <td data-testid="run-total">{{ run.total_rows }}</td>
+            <td data-testid="run-invalid">{{ run.invalid_rows }}</td>
+            <td><span class="status {{ run.status }}" data-testid="run-status">{{ run.status }}</span></td>
+            <td class="muted">{{ run.created_at|date:"Y-m-d H:i" }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="muted" data-testid="empty-state">No validation runs yet. Upload a CSV to get started.</p>
+  {% endif %}
+</div>
+{% endblock %}
